@@ -3,35 +3,56 @@ const todos = [{
     completed: true,
 }, {
     text: 'Study',
-    complete: true
+    completed: true
 }, {
     text: 'Play',
-    complete: false
+    completed: false
+}, {
+    text: 'buy food',
+    completed: false
 }]
 
-const summary = document.createElement('h1')
-summary.textContent = `You have ${todos.length} todos left`
-document.querySelector('#todo-summary').appendChild(summary)
-
-const sortedTodos = (todos) => {
-    todos.sort((a, b) => {
-        if (a.complete && !b.complete) {
-            return 1
-        } else if (!a.complete && b.complete) {
-            return -1
-        } else {
-            return 0
-        }
-    })
+const filters = {
+    searchText: ''
 }
 
-const showTodos = (todos) => {
-    todos.forEach((todo) => {
+const renderTodos = (todos, filters) => {
+    const filteredTodos = todos.filter((todo) => {
+        return todo.text.toLowerCase().includes(filters.searchText.toLowerCase())
+    })
+
+    const incompletedTodos = filteredTodos.filter((todo) => {
+        return !todo.completed
+    })
+
+    document.querySelector('#todo-list').innerHTML = '';
+
+    const summary = document.createElement('h1')
+    summary.textContent = `You have ${incompletedTodos.length} todos left`
+    document.querySelector('#todo-list').appendChild(summary)
+
+    filteredTodos.forEach((todo) => {
         const newEl = document.createElement('p')
         newEl.textContent = todo.text
         document.querySelector('#todo-list').appendChild(newEl)
     })  
 }
 
-sortedTodos(todos)
-showTodos(todos)
+renderTodos(todos, filters)
+
+// const sortedTodos = (todos) => {
+//     todos.sort((a, b) => {
+//         if (a.completed && !b.completed) {
+//             return 1
+//         } else if (!a.completed && b.completed) {
+//             return -1
+//         } else {
+//             return 0
+//         }
+//     })
+// }
+
+document.querySelector('#search-text').addEventListener('input', (e) => {
+    filters.searchText = e.target.value
+    renderTodos(todos, filters)
+})
