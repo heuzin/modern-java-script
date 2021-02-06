@@ -13,12 +13,21 @@ const todos = [{
 }]
 
 const filters = {
-    searchText: ''
+    searchText: '',
+    hideCompleted: false
 }
 
 const renderTodos = (todos, filters) => {
-    const filteredTodos = todos.filter((todo) => {
+    let filteredTodos = todos.filter((todo) => {
         return todo.text.toLowerCase().includes(filters.searchText.toLowerCase())
+    })
+
+    filteredTodos = filteredTodos.filter((todo) => {
+        if (filters.hideCompleted) { 
+            return !todo.completed
+        } else {
+            return true
+        }
     })
 
     const incompletedTodos = filteredTodos.filter((todo) => {
@@ -38,6 +47,8 @@ const renderTodos = (todos, filters) => {
     })  
 }
 
+
+
 renderTodos(todos, filters)
 
 // const sortedTodos = (todos) => {
@@ -54,5 +65,10 @@ renderTodos(todos, filters)
 
 document.querySelector('#search-text').addEventListener('input', (e) => {
     filters.searchText = e.target.value
+    renderTodos(todos, filters)
+})
+
+document.querySelector('#hide-completed').addEventListener('change', e => {
+    filters.hideCompleted = e.target.checked
     renderTodos(todos, filters)
 })
